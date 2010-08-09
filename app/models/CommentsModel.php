@@ -13,8 +13,10 @@ class CommentsModel
 
 	public static function insert($data)
 	{
-		return dibi::query('
+		dibi::query('
 			INSERT INTO [comments]', $data
 		);
+
+		return dibi::getInsertId();
 	}
 }

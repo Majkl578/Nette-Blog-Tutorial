@@ -7,15 +7,15 @@
  * @package    MyApplication
  */
 
+use Nette\Application\AppForm,
+	Nette\Forms\Form;
+
 /**
  * Homepage presenter.
  *
  * @author     John Doe
  * @package    MyApplication
  */
-use Nette\Application\AppForm,
-	Nette\Forms\Form;
-
 class HomepagePresenter extends BasePresenter
 {
 	public function renderDefault()
@@ -29,14 +29,6 @@ class HomepagePresenter extends BasePresenter
 		$this->template->comments = CommentsModel::fetchAll($id);
 	}
 
-	public function commentFormSubmitted(AppForm $form)
-	{
-		$data = $form->getValues();
-		$data['date'] = new DateTime();
-		CommentsModel::insert($data);
-		$this->redirect('this');
-	}
-
 	public function createComponentCommentForm($name)
 	{
 		$form = new AppForm($this, $name);
@@ -45,8 +37,16 @@ class HomepagePresenter extends BasePresenter
 		$form->addTextArea('body', 'Komentář')
 				->addRule(Form::FILLED, 'Komentář je povinný!');
 		$form->addSubmit('send', 'Odeslat');
-		$form->addHidden('post_id', $this->request->params['id']);
 		$form->onSubmit[] = callback($this, 'commentFormSubmitted');
 		return $form;
+	}
+
+	public function commentFormSubmitted(AppForm $form)
+	{
+		$data = $form->getValues();
+		$data['date'] = new DateTime();
+		$data['post_id'] = (int) $this->getParam('id');
+		$id = CommentsModel::insert($data);
+		$this->redirect("this#comment-$id");
 	}
 }
