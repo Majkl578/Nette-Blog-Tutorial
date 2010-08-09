@@ -25,7 +25,10 @@ class HomepagePresenter extends BasePresenter
 
 	public function renderSingle($id)
 	{
-		$this->template->post = PostsModel::fetchSingle($id);
+		if (!($post = PostsModel::fetchSingle($id))) {
+			$this->redirect('default'); //article not found
+		}
+		$this->template->post = $post;
 		$this->template->comments = CommentsModel::fetchAll($id);
 	}
 
