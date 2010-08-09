@@ -1,0 +1,19 @@
+{block content}
+<a href="{plink default}">&lt;&lt; home </a>
+<div class="post">
+    <h1>{$post['title']}</h1>
+    <small>Přidáno {$post['date']|date}</small>
+    <p>{$post['body']}</p>
+</div>
+
+<h3>Komentáře:</h3>
+<div id="comments">
+    {foreach $comments as $comment}
+    <div class="commment">
+        <p>{$comment['body']}</p>
+        <small>{$comment['author']}, {$comment['date']|date}</small>
+        <hr>
+    </div>
+    {/foreach}
+</div>
+{control commentForm}
